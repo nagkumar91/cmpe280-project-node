@@ -243,6 +243,36 @@ app.get('/mostVisitedPage/:customDate', function(req, res)  {
     })
 });
 
+app.get('/mapDataOldData/:customDate', function(req, res)  {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+        {
+            $group: {
+                _id:    {
+                    lat: "$latitude",
+                    lng: "$longitude"
+                },
+                count:  {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort:  {
+                _id: -1
+            }
+        }
+    ], function(err, docs){
+        if(err) {
+            console.log("Error!");
+        }
+        else    {
+            res.send(docs);
+        }
+    })
+});
+
 app.get('/listAllDates', function(req, res) {
     mongoose.connection.db.listCollections().toArray((function(err, names){
         if(err) {
