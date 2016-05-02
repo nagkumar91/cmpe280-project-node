@@ -172,6 +172,25 @@ app.get('/olderData/:customDate', function(req, res)  {
     );
 });
 
+app.get('/listAllDates', function(req, res) {
+    mongoose.connection.db.listCollections().toArray((function(err, names){
+        if(err) {
+            console.log("Error!");
+        }
+        else    {
+            var collections = [];
+            for(var i=0;i<names.length;i++){
+                if(names[i].name.startsWith("collection_"))  {
+                    var v = names[i].name;
+                    v = v.replace("collection_", "");
+                    collections.push(new Date(v.substring(0,4), v.substring(4, 6), v.substring(6, 8)));
+                }
+            }
+            res.send(collections);
+        }
+
+    }))
+});
 
 http.listen(3000, function(){
     console.log('listening on *:3000');
