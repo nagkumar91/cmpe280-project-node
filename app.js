@@ -8,12 +8,31 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var querystring = require('querystring');
 var reqHttp = require('request');
+var mongoose = require('mongoose');
+var mongooseOptions = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+    replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
+var mongodbUri = 'mongodb://cmpe280:cmpe280@ds013162.mlab.com:13162/cmpe280';
+mongoose.connect(mongodbUri, mongooseOptions);
+var conn = mongoose.connection;
+var mongooseLogSchema = mongoose.Schema({
+    latitude: mongoose.Schema.Types.Number,
+    longitude: mongoose.Schema.Types.Number,
+    country: mongoose.Schema.Types.String,
+    region: mongoose.Schema.Types.String,
+    city: mongoose.Schema.Types.String,
+    timestamp: mongoose.Schema.Types.Date
+});
 io.on('connection', function(socket){
     console.log('a user connected');
     io.emit('channel_to_send_data', { for: 'everyone' });
 });
 var Tail = require('always-tail2');
-
+Date.prototype.yyyymmdd = function() {
+    var yyyy = this.getFullYear().toString();
+    var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+    var dd  = this.getDate().toString();
+    return yyyy + (mm[1]?mm:"0"+mm[0]) + (dd[1]?dd:"0"+dd[0]); // padding
+};
 function tailLog(){
     var requestAddress="http://127.0.0.1:5000/";
     var ipadd="Ipadd";
@@ -66,22 +85,7 @@ function tailLog(){
             PostCode(requestAddress,ipadd,ipaddr);
         }
 
-    }
-
-
-    /*
-     Sends the new IP address to the Flask server
-     */
-    //var sendIPRequests = function (ipaddress){
-    //    PostCode(requestAddress,ipadd,ipaddress);
-    //};
-
-
-    var insertParam = function(requestAddress,key, value) {
-        var requestAddr=requestAddress+"?"+key+"="+value;
-        return requestAddr;
-    }
-
+    };
 
     var PostCode = function(requestAddress,ipadd,ipaddress) {
 
@@ -89,18 +93,17 @@ function tailLog(){
             ipadd: ipaddress
         });
         var requestURL=	'http://127.0.0.1:5000/iptrace?ipadd='+ipaddress;
-        console.log("Requesting " + requestURL);
         reqHttp(requestURL, function(error, response, body)   {
+            var d = new Date();
+
             if(error)   {
                 console.log("Error ");
                 console.log(body);
                 console.log(error);
             }
             else    {
-                console.log(body);
                 if(!body.startsWith("<!DOCTYPE"))    {
                     var b = JSON.parse(body);
-                    console.log(b['latitude']);
                     var payload = {
                         latitude: b['latitude'],
                         longitude: b['longitude'],
@@ -108,8 +111,10 @@ function tailLog(){
                         region: b['region'],
                         city: b['city'],
                         status: "200",
-                        timestamp: ""
+                        timestamp: d
                     };
+                    var collection_name = "collection_" + d.yyyymmdd();
+                    conn.collection(collection_name).insert(payload);
                     io.emit('channel_to_send_data', payload);
                 }
 
@@ -137,6 +142,34 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/views/dashboard.html');
+});
+
+
+app.get('/olderData/:customDate', function(req, res)  {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+            { $group : {
+                _id: {
+                    year :  { $substr : ["$timestamp", 0, 4 ] },
+                    month : { $substr : ["$timestamp", 5, 2 ] },
+                    day :   { $substr : ["$timestamp", 8, 2 ] },
+                    hour :   { $substr : ["$timestamp", 11, 2 ] }
+                },
+                count: { $sum: 1 }
+            }
+            },
+            { $sort : { _id : -1}}
+    ],
+        function(err, result){
+            if(err) {
+                console.log("Error!");
+            }
+            else    {
+                res.send(result)
+            }
+        }
+    );
 });
 
 
