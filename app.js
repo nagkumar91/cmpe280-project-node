@@ -1,14 +1,127 @@
 var express = require('express');
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var querystring = require('querystring');
+var reqHttp = require('request');
+io.on('connection', function(socket){
+    console.log('a user connected');
+    io.emit('channel_to_send_data', { for: 'everyone' });
+});
+var Tail = require('always-tail2');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+function tailLog(){
+    var requestAddress="http://127.0.0.1:5000/";
+    var ipadd="Ipadd";
+    var logFileLocation='logs/access.log'; //Log Location
+    /* Keeping Track of new entries in the log
+     Continuously running and monitoring
+     */
+    var watchLogEntries=function (){
+        var options= {
+            lineSeparator: /[\r]{0,1}\n/,
+            fromBeginning: false,
+            watchOptions: {},
+            follow: true,
+            logger: console
+        };
+        var tail = new Tail(logFileLocation,'\n',options);
 
-var app = express();
+        tail.on("line", function(data) {
+            processLine(data);
+        });
+
+        tail.on("error", function(error) {
+            console.log('ERROR: ', error);
+        });
+
+        tail.watch();
+
+    };
+
+
+
+//Obtain IP address from the Log line
+    var processLine=function(line){
+        if(line ===''){
+            return console.log("No readStream");
+        }
+
+        //Extracting IPaddress from log Entry
+        var txt=line.toString();
+        var re1='.*?';	// Non-greedy match on filler
+        var re2='((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?![\\d])';	// IPv4 IP Address 1
+        var p = new RegExp(re1+re2,["i"]);
+        var m = p.exec(txt);
+        //check if IP is present
+        if (m != null)
+        {
+            var ipaddress1=m[1];
+            var ipaddr=ipaddress1.replace(/</,"&lt;");
+            //sendIPRequests(ipaddr);
+            PostCode(requestAddress,ipadd,ipaddr);
+        }
+
+    }
+
+
+    /*
+     Sends the new IP address to the Flask server
+     */
+    //var sendIPRequests = function (ipaddress){
+    //    PostCode(requestAddress,ipadd,ipaddress);
+    //};
+
+
+    var insertParam = function(requestAddress,key, value) {
+        var requestAddr=requestAddress+"?"+key+"="+value;
+        return requestAddr;
+    }
+
+
+    var PostCode = function(requestAddress,ipadd,ipaddress) {
+
+        var data = querystring.stringify({
+            ipadd: ipaddress
+        });
+        var requestURL=	'http://127.0.0.1:5000/iptrace?ipadd='+ipaddress;
+        console.log("Requesting " + requestURL);
+        reqHttp(requestURL, function(error, response, body)   {
+            if(error)   {
+                console.log("Error ");
+                console.log(body);
+                console.log(error);
+            }
+            else    {
+                console.log(body);
+                if(!body.startsWith("<!DOCTYPE"))    {
+                    var b = JSON.parse(body);
+                    console.log(b['latitude']);
+                    var payload = {
+                        latitude: b['latitude'],
+                        longitude: b['longitude'],
+                        country: b['country'],
+                        region: b['region'],
+                        city: b['city'],
+                        status: "200",
+                        timestamp: ""
+                    };
+                    io.emit('channel_to_send_data', payload);
+                }
+
+            }
+        });
+    };
+
+    watchLogEntries();
+
+};
+
+tailLog();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,39 +135,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/views/dashboard.html');
 });
 
 
-module.exports = app;
+http.listen(3000, function(){
+    console.log('listening on *:3000');
+});
+
+
