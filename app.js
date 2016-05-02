@@ -20,7 +20,8 @@ var mongooseLogSchema = mongoose.Schema({
     country: mongoose.Schema.Types.String,
     region: mongoose.Schema.Types.String,
     city: mongoose.Schema.Types.String,
-    timestamp: mongoose.Schema.Types.Date
+    timestamp: mongoose.Schema.Types.Date,
+    uri: mongoose.Schema.Types.String
 });
 io.on('connection', function(socket){
     console.log('a user connected');
@@ -111,7 +112,8 @@ function tailLog(){
                         region: b['region'],
                         city: b['city'],
                         status: "200",
-                        timestamp: d
+                        timestamp: d,
+                        uri: "/"
                     };
                     var collection_name = "collection_" + d.yyyymmdd();
                     conn.collection(collection_name).insert(payload);
@@ -149,17 +151,32 @@ app.get('/hourlyData/:customDate', function(req, res)  {
     var collection_name = "collection_" + req.params.customDate;
     var collection_model = mongoose.model(collection_name, mongooseLogSchema);
     collection_model.aggregate([
-            { $group : {
-                _id: {
-                    year :  { $substr : ["$timestamp", 0, 4 ] },
-                    month : { $substr : ["$timestamp", 5, 2 ] },
-                    day :   { $substr : ["$timestamp", 8, 2 ] },
-                    hour :   { $substr : ["$timestamp", 11, 2 ] }
+            {
+                $group: {
+                    _id:    {
+                        year:   {
+                            $substr: ["$timestamp", 0, 4 ]
+                        },
+                        month:  {
+                            $substr: ["$timestamp", 5, 2 ]
+                        },
+                        day:   {
+                            $substr : ["$timestamp", 8, 2 ]
+                        },
+                        hour:   {
+                            $substr : ["$timestamp", 11, 2 ]
+                        }
                 },
-                count: { $sum: 1 }
+                count:  {
+                    $sum: 1
+                }
             }
             },
-            { $sort : { _id : -1}}
+            {
+                $sort : {
+                    _id : -1
+                }
+            }
     ],
         function(err, result){
             if(err) {
@@ -197,6 +214,35 @@ app.get('/pieForStatusCode/:customDate', function(req, res) {
         });
 });
 
+app.get('/mostVisitedPage/:customDate', function(req, res)  {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+        {
+            $group: {
+                _id:    {
+                    path: "$uri"
+                },
+                count:  {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort : {
+                _id : -1
+            }
+        }
+    ], function(err, docs)  {
+        if(err) {
+            console.log("Error!");
+        }
+        else    {
+            res.send(docs)
+        }
+    })
+});
+
 app.get('/listAllDates', function(req, res) {
     mongoose.connection.db.listCollections().toArray((function(err, names){
         if(err) {
@@ -216,6 +262,7 @@ app.get('/listAllDates', function(req, res) {
 
     }))
 });
+
 
 http.listen(3000, function(){
     console.log('listening on *:3000');
