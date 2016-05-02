@@ -175,7 +175,7 @@ app.get('/olderData/:customDate', function(req, res)  {
 app.get('/listAllDates', function(req, res) {
     mongoose.connection.db.listCollections().toArray((function(err, names){
         if(err) {
-            console.log("Error!");
+            console.log("Mongo Error!");
         }
         else    {
             var collections = [];
