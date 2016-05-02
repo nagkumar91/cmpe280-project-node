@@ -145,7 +145,7 @@ app.get('/', function(req, res){
 });
 
 
-app.get('/olderData/:customDate', function(req, res)  {
+app.get('/hourlyData/:customDate', function(req, res)  {
     var collection_name = "collection_" + req.params.customDate;
     var collection_model = mongoose.model(collection_name, mongooseLogSchema);
     collection_model.aggregate([
@@ -170,6 +170,31 @@ app.get('/olderData/:customDate', function(req, res)  {
             }
         }
     );
+});
+
+app.get('/pieForStatusCode/:customDate', function(req, res) {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+        {
+            $group: {
+                _id:    {
+                    status_code: "$status"
+                },
+                count:  {
+                    $sum: 1
+                }
+            }
+        }
+    ],
+        function(err, result){
+            if(err) {
+                console.log("Error!");
+            }
+            else    {
+                res.send(result);
+            }
+        });
 });
 
 app.get('/listAllDates', function(req, res) {
