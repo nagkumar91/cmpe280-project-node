@@ -65,30 +65,136 @@ function tailLog(){
 
 
 
+
+   var re1='.*?';   // Non-greedy match on filler
+    //Regex for status
+      var re42='\\d+';  // Uninteresting: int
+      var re3='.*?';    // Non-greedy match on filler
+      var re4='\\d+';   // Uninteresting: int
+      var re5='.*?';    // Non-greedy match on filler
+      var re6='\\d+';   // Uninteresting: int
+      var re7='.*?';    // Non-greedy match on filler
+      var re8='\\d+';   // Uninteresting: int
+      var re9='.*?';    // Non-greedy match on filler
+      var re10='\\d+';  // Uninteresting: int
+      var re11='.*?';   // Non-greedy match on filler
+      var re12='\\d+';  // Uninteresting: int
+      var re13='.*?';   // Non-greedy match on filler
+      var re14='\\d+';  // Uninteresting: int
+      var re15='.*?';   // Non-greedy match on filler
+      var re16='\\d+';  // Uninteresting: int
+      var re17='.*?';   // Non-greedy match on filler
+      var re18='\\d+';  // Uninteresting: int
+      var re19='.*?';   // Non-greedy match on filler
+      var re20='\\d+';  // Uninteresting: int
+      var re21='.*?';   // Non-greedy match on filler
+      var re22='\\d+';  // Uninteresting: int
+      var re23='.*?';   // Non-greedy match on filler
+      var re24='\\d+';  // Uninteresting: int
+      var re25='.*?';   // Non-greedy match on filler
+      var re26='\\d+';  // Uninteresting: int
+      var re27='.*?';   // Non-greedy match on filler
+      var re28='\\d+';  // Uninteresting: int
+      var re29='.*?';   // Non-greedy match on filler
+      var re30='(\\d+)';    // Integer Number 1
+
+      var pStatus = new RegExp(re1+re42+re3+re4+re5+re6+re7+re8+re9+re10+re11+re12+re13+re14+re15+re16+re17+re18+re19+re20+re21+re22+re23+re24+re25+re26+re27+re28+re29+re30,["i"]);
+   
+      //Regex for timestamp
+      var red1='((?:(?:[0-2]?\\d{1})|(?:[3][01]{1}))[-:\\/.](?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[-:\\/.](?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])';  // DDMMMYYYY 1
+      var red2='.*?';   // Non-greedy match on filler
+      var red3='((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)';    // HourMinuteSec 1
+    // DDMMYY 1
+      var red4='.*?';   // Non-greedy match on filler
+      var red5='([-+]\\d+)';    // Integer Number 1
+      var ts = new RegExp(re1+red1+red2+red3+red4+red5,["i"]);
+    
+        //Regex for IPAddress    
+      var re2='((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?![\\d])';  // IPv4 IP Address 1
+      var p = new RegExp(re1+re2,["i"]);
+
+
+      //parsing the webpage accesses
+
+       var regPageAccessed='((?:http|https)(?::\\/{2}[\\w]+)(?:[\\/|\\.]?)(?:[^\\s"]*))';   // HTTP URL 1
+
+      var pgAccessed = new RegExp(re1+regPageAccessed,["i"]);
+
+
+      //parse the page
+     var regwebPage='((?:[\\/|\\.]?)(?:[^\\s"]*))'; // Unix Path 1
+
+      var webPage = new RegExp(regwebPage,["i"]);
+
 //Obtain IP address from the Log line
-    var processLine=function(line){
-        if(line ===''){
-            return console.log("No readStream");
-        }
+var processLine=function(line){
+    if(line ===''){
+        return console.log("No readStream");
+    }
 
-        //Extracting IPaddress from log Entry
-        var txt=line.toString();
-        var re1='.*?';	// Non-greedy match on filler
-        var re2='((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?![\\d])';	// IPv4 IP Address 1
-        var p = new RegExp(re1+re2,["i"]);
-        var m = p.exec(txt);
-        //check if IP is present
-        if (m != null)
-        {
-            var ipaddress1=m[1];
-            var ipaddr=ipaddress1.replace(/</,"&lt;");
-            //sendIPRequests(ipaddr);
-            PostCode(requestAddress,ipadd,ipaddr);
-        }
+    //Extracting IPaddress from log Entry
+    var txt=line.toString();    
 
-    };
+      var m = p.exec(txt);
+      //check if IP is present
+      if (m != null)
+      {
+        var ipaddress1=m[1];
+        var ipaddr=ipaddress1.replace(/</,"&lt;");
+        
+      }
 
-    var PostCode = function(requestAddress,ipadd,ipaddress) {
+      var status=getStatus(txt)
+      var dateTimeStamp=getDate(txt);
+      var webPage=getPageAccessed(txt);
+      PostCode(requestAddress,ipadd,ipaddress,status,dateTimeStamp,webPage);
+  }
+
+var getStatus=function(txt){
+
+    var stats = pStatus.exec(txt);
+      if (stats != null)
+      {
+          var int1=stats[1];
+          var stat=int1.replace(/</,"&lt;");
+          return stat;
+      }
+
+}
+var getDate=function(txt){
+
+    
+      var timestamp = ts.exec(txt);
+      if (timestamp != null)
+      {
+          var ddmmmyyyy1=timestamp[1];
+          var ddmmyy1=timestamp[2];
+          var signed_int1=timestamp[3];
+         
+          var timestmp=ddmmmyyyy1.replace(/</,"&lt;")+" "+ddmmyy1.replace(/</,"&lt;")+" "+signed_int1.replace(/</,"&lt;");
+          var dtmstmp=new Date(timestmp);
+          console.log(dtmstmp)
+          return dtmstmp;
+      }
+}
+
+
+var getPageAccessed=function(txt){
+
+
+     var pageAccessed = pgAccessed.exec(txt);
+
+      if (pageAccessed != null)
+      {
+          var httpurl1=pageAccessed[1];
+          var page = httpurl1.replace(/</,"&lt;");
+          page=page.split('/').slice(1).join('/');
+          
+          return page
+      }
+}
+
+    var PostCode = function(requestAddress,ipadd,ipaddress,status, dateTimeStamp, webPage) {
 
         var data = querystring.stringify({
             ipadd: ipaddress
@@ -111,9 +217,9 @@ function tailLog(){
                         country: b['country'],
                         region: b['region'],
                         city: b['city'],
-                        status: "200",
-                        timestamp: d,
-                        uri: "/"
+                        status: status,
+                        timestamp: dateTimeStamp,
+                        uri: webPage
                     };
                     var collection_name = "collection_" + d.yyyymmdd();
                     conn.collection(collection_name).insert(payload);
