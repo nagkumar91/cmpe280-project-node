@@ -245,6 +245,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/dashboard.html');
 });
 
+app.get('/oldData', function(req, res)  {
+   res.sendFile(__dirname + "/views/old_data.html");
+});
 
 app.get('/hourlyData/:customDate', function (req, res) {
     var collection_name = "collection_" + req.params.customDate;
