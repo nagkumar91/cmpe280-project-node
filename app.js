@@ -147,7 +147,7 @@ var processLine=function(line){
       var status=getStatus(txt)
       var dateTimeStamp=getDate(txt);
       var webPage=getPageAccessed(txt);
-      PostCode(requestAddress,ipadd,ipaddress,status,dateTimeStamp,webPage);
+      PostCode(requestAddress,ipadd,ipaddr,status,dateTimeStamp,webPage);
   }
 
 var getStatus=function(txt){
