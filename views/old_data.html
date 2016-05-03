@@ -71,14 +71,19 @@
 
 <script>
     $(document).ready(function(){
+        function displayMostVisitedPages(dateString)  {
+            var url = "/mostVisitedPage/" + dateString;
+            $.get(url).done(function(data)  {
+               console.log(data);
+            });
+        }
+
         $("#datePicked").datepicker({
+            dateFormat: 'yymmdd',
             onSelect: function(dateText, inst) {
-                var date = $(this).val();
-                console.log(date);
-                var parts = date.split("/");
-                parts = parts.reverse();
-                var dateStringForApi = parts.join("");
+                var dateStringForApi = $(this).val();
                 //use this datestring to amke api calls.
+                displayMostVisitedPages(dateStringForApi);
             }
         })
     });
