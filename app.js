@@ -68,7 +68,7 @@ function tailLog() {
 
     var re1 = '.*?';   // Non-greedy match on filler
     //Regex for status
-    var re42 = '\\d+';  // Uninteresting: int
+    /*var re42 = '\\d+';  // Uninteresting: int
     var re3 = '.*?';    // Non-greedy match on filler
     var re4 = '\\d+';   // Uninteresting: int
     var re5 = '.*?';    // Non-greedy match on filler
@@ -96,9 +96,13 @@ function tailLog() {
     var re27 = '.*?';   // Non-greedy match on filler
     var re28 = '\\d+';  // Uninteresting: int
     var re29 = '.*?';   // Non-greedy match on filler
-    var re30 = '(\\d+)';    // Integer Number 1
+    var re30 = '(\\d+)';    // Integer Number 1*/
 
-    var pStatus = new RegExp(re1 + re42 + re3 + re4 + re5 + re6 + re7 + re8 + re9 + re10 + re11 + re12 + re13 + re14 + re15 + re16 + re17 + re18 + re19 + re20 + re21 + re22 + re23 + re24 + re25 + re26 + re27 + re28 + re29 + re30, ["i"]);
+   //200,202,204,300,301,302,400,401,404,407,408,500,502,504
+    var regStatus='(200|202|204|300|301|302|400|401|404|407|408|500|502|504)';
+   // var pStatus = new RegExp(re1 + re42 + re3 + re4 + re5 + re6 + re7 + re8 + re9 + re10 + re11 + re12 + re13 + re14 + re15 + re16 + re17 + re18 + re19 + re20 + re21 + re22 + re23 + re24 + re25 + re26 + re27 + re28 + re29 + re30, ["i"]);
+
+    var pStatus=new RegExp(re1+regStatus,["i"]);
 
     //Regex for timestamp
     var red1 = '((?:(?:[0-2]?\\d{1})|(?:[3][01]{1}))[-:\\/.](?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[-:\\/.](?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])';  // DDMMMYYYY 1
@@ -144,6 +148,7 @@ function tailLog() {
         }
 
         var status = getStatus(txt);
+        console.log("STATUS  "+status);
         var dateTimeStamp = getDate(txt);
         var webPage = getPageAccessed(txt);
         PostCode(requestAddress, ipadd, ipaddr, status, dateTimeStamp, webPage);
@@ -202,6 +207,7 @@ function tailLog() {
                 console.log(error);
             }
             else {
+                if(!body){
                 if (!body.startsWith("<!DOCTYPE")) {
                     var b = JSON.parse(body);
                     var payload = {
@@ -214,10 +220,12 @@ function tailLog() {
                         timestamp: dateTimeStamp,
                         uri: webPage
                     };
+                    console.log(payload)
                     var collection_name = "collection_" + d.yyyymmdd();
                     conn.collection(collection_name).insert(payload);
                     io.emit('channel_to_send_data', payload);
-                }
+               }
+           }
 
             }
         });
@@ -394,6 +402,8 @@ app.get('/listAllDates', function (req, res) {
 
     }))
 });
+
+
 
 
 http.listen(3000, function () {
