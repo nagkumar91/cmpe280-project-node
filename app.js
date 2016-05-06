@@ -340,7 +340,7 @@ app.get('/mostVisitedPage/:customDate', function (req, res) {
         },
         {
             $sort: {
-                _id: -1
+                count: -1
             }
         }
     ], function (err, docs) {
@@ -348,7 +348,7 @@ app.get('/mostVisitedPage/:customDate', function (req, res) {
             console.log("Error!");
         }
         else {
-            res.send(docs)
+            res.send(docs.slice(0, 5));
         }
     })
 });
@@ -370,7 +370,7 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
         },
         {
             $sort: {
-                _id: -1
+                count: -1
             }
         }
     ], function (err, docs) {
