@@ -193,6 +193,7 @@ function tailLog() {
             ipadd: ipaddress
         });
         var requestURL = 'http://127.0.0.1:5000/iptrace?ipadd=' + ipaddress;
+        console.log(requestURL);
         reqHttp(requestURL, function (error, response, body) {
             var d = new Date();
 
@@ -216,6 +217,8 @@ function tailLog() {
                     };
                     var collection_name = "collection_" + d.yyyymmdd();
                     conn.collection(collection_name).insert(payload);
+                    console.log("sending new entry")  
+                    console.log(payload)  
                     io.emit('channel_to_send_data', payload);
                 }
 
@@ -248,6 +251,14 @@ app.get('/', function (req, res) {
 app.get('/oldData', function(req, res)  {
    res.sendFile(__dirname + "/views/old_data.html");
 });
+
+app.get('/liveMap', function(req, res)  {
+   res.sendFile(__dirname + "/views/liveMap.html");
+});
+app.get('/mostVisited', function(req, res)  {
+   res.sendFile(__dirname + "/views/mostVisited.html");
+});
+
 
 app.get('/hourlyData/:customDate', function (req, res) {
     var collection_name = "collection_" + req.params.customDate;
