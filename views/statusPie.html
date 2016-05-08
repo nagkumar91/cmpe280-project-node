@@ -49,37 +49,23 @@
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li><a href="/">Overview </a></li>
-                <li class="active"><a href="#">Old Data <span class="sr-only">(current)</span></a></li>
+                <li ><a href="#">Old Data </a></li>
                 <li><a href="/liveMap">Live Map</a></li>
                 <li><a href="/mostVisited">Most Visited</a></li>
                 <li><a href="/mapOldData">Old Map Data</a></li>
-                <li><a href="/statusPie">Page Status Pie</a></li>
-
+                <li class="active"><a href="/statusPie">Page Status Pie<span class="sr-only">(current)</span></a></li>
 
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Old Data</h1>
+            <h1 class="page-header">Page hits Status Pie</h1>
 
             <input type="text" id="datePicked">
 
             <div class="row">
-                <div class="mostVisitedPages" style="display: none">
-                    <h4>Most visited pages</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Page</th>
-                            <th>Count</th>
-                        </tr>
-                        </thead>
-                        <tbody id="mostVisitedtbody">
+            <div id="container"></div>
 
 
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
         </div>
@@ -95,19 +81,141 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 <script>
+function drawChart(fetchedData) {
+
+
+    temp={};
+    for(elem=0;elem<fetchedData.length;elem++){
+        if(temp[fetchedData[elem]._id.status_code] == null){
+            temp[fetchedData[elem]._id.status_code] = 1;
+        }
+        else{
+            temp[fetchedData[elem]._id.status_code] = temp[fetchedData[elem]._id.status_code]+1;
+        }
+
+        }
+    statusJson=[
+    {
+        name:200,
+        y:temp[200],
+        drilldown:200
+    },
+    {
+        name:202,
+        y:temp[202],
+        drilldown:202
+    },
+    {
+        name:204,
+        y:temp[204],
+        drilldown:204
+    },
+    {
+        name:300,
+        y:temp[300],
+        drilldown:300
+    },
+    {
+        name:301,
+        y:temp[301],
+        drilldown:301
+    },
+    {
+        name:302,
+        y:temp[302],
+        drilldown:302
+    },
+    {
+        name:400,
+        y:temp[400],
+        drilldown:400
+    },
+    {
+        name:401,
+        y:temp[401],
+        drilldown:401
+    },
+    {
+        name:404,
+        y:temp[404],
+        drilldown:404
+    },
+    {
+        name:407,
+        y:temp[407],
+        drilldown:407
+    },
+    {
+        name:408,
+        y:temp[408],
+        drilldown:408
+    },
+    {
+        name:500,
+        y:temp[500],
+        drilldown:500
+    },
+    {
+        name:502,
+        y:temp[502],
+        drilldown:502
+    },
+    {
+        name:407,
+        y:temp[407],
+        drilldown:407
+    }]
+        console.log(statusJson);
+
+    // Create the chart
+    $('#container').highcharts({
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Website Page Hits Status Codes'
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y:.1f}%'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+        },
+        series: [{
+            name: 'Status',
+            colorByPoint: true,
+            data: statusJson
+        }]
+    });
+};
+
     $(document).ready(function () {
         function displayMostVisitedPages(dateString) {
-            $(".mostVisitedPages").show();
-            var url = "/mostVisitedPage/" + dateString;
+            //$(".mostVisitedPages").show();
+            var url = "/pieForStatusCodeGrouped/" + dateString;
             $.get(url).done(function (data) {
-                $("#mostVisitedtbody").html("");
-                var row = '<tr><th scope="row">placeholder_for_i</th><td>placeholder_for_first_field</td><td>placeholder_for_second_field</td></tr>';
-                for (var i = 0; i < data.length; i++) {
-                    $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
-                }
+
+                console.log(data);
+                drawChart(data);
+
             });
         }
+
 
         $("#datePicked").datepicker({
             dateFormat: 'yymmdd',

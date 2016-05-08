@@ -49,9 +49,9 @@
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li><a href="/">Overview </a></li>
-                <li class="active"><a href="#">Old Data <span class="sr-only">(current)</span></a></li>
+                <li ><a href="#">Old Data </a></li>
                 <li><a href="/liveMap">Live Map</a></li>
-                <li><a href="/mostVisited">Most Visited</a></li>
+                <li class="active"><a href="/mostVisited">Most Visited<span class="sr-only">(current)</span></a></li>
                 <li><a href="/mapOldData">Old Map Data</a></li>
                 <li><a href="/statusPie">Page Status Pie</a></li>
 
@@ -59,27 +59,13 @@
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Old Data</h1>
+            <h1 class="page-header">Most Visited</h1>
 
             <input type="text" id="datePicked">
 
             <div class="row">
-                <div class="mostVisitedPages" style="display: none">
-                    <h4>Most visited pages</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Page</th>
-                            <th>Count</th>
-                        </tr>
-                        </thead>
-                        <tbody id="mostVisitedtbody">
+            <div id="container" style="min-width: 310px; max-width: 800px; height: 400px;"></div>
 
-
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
         </div>
@@ -95,19 +81,83 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
 <script>
+
+    function drawChart(data) {
+        pages=[];
+        hits=[];
+        for(elem=0;elem<data.length;elem++){
+            pages.push(data[elem]._id.path);
+
+            hits.push(data[elem].count);
+            
+        }
+            $('#container').highcharts({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Most Visited Website Pages'
+                },
+                xAxis: {
+                    categories:pages,
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Hits',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 80,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Hits',
+                    data: hits
+                }]
+            });
+        };
+
     $(document).ready(function () {
         function displayMostVisitedPages(dateString) {
-            $(".mostVisitedPages").show();
+            //$(".mostVisitedPages").show();
             var url = "/mostVisitedPage/" + dateString;
             $.get(url).done(function (data) {
-                $("#mostVisitedtbody").html("");
-                var row = '<tr><th scope="row">placeholder_for_i</th><td>placeholder_for_first_field</td><td>placeholder_for_second_field</td></tr>';
-                for (var i = 0; i < data.length; i++) {
-                    $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
-                }
+
+                console.log(data);
+                drawChart(data);
+
             });
         }
+
 
         $("#datePicked").datepicker({
             dateFormat: 'yymmdd',
