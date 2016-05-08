@@ -255,10 +255,18 @@ app.get('/oldData', function(req, res)  {
 app.get('/liveMap', function(req, res)  {
    res.sendFile(__dirname + "/views/liveMap.html");
 });
+
 app.get('/mostVisited', function(req, res)  {
    res.sendFile(__dirname + "/views/mostVisited.html");
 });
 
+app.get('/mapOldData', function(req, res)  {
+   res.sendFile(__dirname + "/views/mapOldData.html");
+});
+
+app.get('/statusPie', function(req, res)  {
+   res.sendFile(__dirname + "/views/statusPie.html");
+});
 
 app.get('/hourlyData/:customDate', function (req, res) {
     var collection_name = "collection_" + req.params.customDate;
@@ -364,7 +372,9 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
             $group: {
                 _id: {
                     lat: "$latitude",
-                    lng: "$longitude"
+                    lng: "$longitude",
+                    city:"$city",
+                    country:"$country"
                 },
                 count: {
                     $sum: 1
@@ -384,6 +394,61 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
             res.send(docs);
         }
     })
+});
+
+app.get('/groupByCountry/:customDate', function (req, res) {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+        {
+            $group: {
+                _id: {
+                    country:"$country"
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort: {
+                count: -1
+            }
+        }
+    ], function (err, docs) {
+        if (err) {
+            console.log("Error!");
+        }
+        else {
+            res.send(docs);
+        }
+    })
+});
+
+app.get('/pieForStatusCodeGrouped/:customDate', function (req, res) {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+            {
+                $group: {
+                    _id: {
+                        path: "$uri",
+                        status_code: "$status"
+                    },
+                    count: {
+                        $sum: 1
+                    }
+                }
+            }
+        ],
+        function (err, result) {
+            if (err) {
+                console.log("Error!");
+            }
+            else {
+                res.send(result);
+            }
+        });
 });
 
 app.get('/listAllDates', function (req, res) {

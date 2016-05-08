@@ -49,37 +49,24 @@
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
                 <li><a href="/">Overview </a></li>
-                <li class="active"><a href="#">Old Data <span class="sr-only">(current)</span></a></li>
+                <li ><a href="#">Old Data </a></li>
                 <li><a href="/liveMap">Live Map</a></li>
                 <li><a href="/mostVisited">Most Visited</a></li>
-                <li><a href="/mapOldData">Old Map Data</a></li>
+                <li class="active"><a href="/mapOldData">Old Map Data<span class="sr-only">(current)</span></a></li>
                 <li><a href="/statusPie">Page Status Pie</a></li>
 
 
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Old Data</h1>
+            <h1 class="page-header">Map for Old Data</h1>
 
             <input type="text" id="datePicked">
 
             <div class="row">
-                <div class="mostVisitedPages" style="display: none">
-                    <h4>Most visited pages</h4>
-                    <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Page</th>
-                            <th>Count</th>
-                        </tr>
-                        </thead>
-                        <tbody id="mostVisitedtbody">
+            <div id="container"></div>
 
 
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
         </div>
@@ -95,19 +82,110 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 <script>
+function drawChart(fetchedData) {
+
+    // Prepare demo data
+    data = [];
+
+    for(elem=0;elem<fetchedData.length;elem++){
+            temp = {};
+            if( fetchedData[elem]._id.country.indexOf('United') >= 0){
+              fetchedData[elem]._id.country = "United States of America";
+            }
+            if( fetchedData[elem]._id.country.indexOf('Russia') >= 0){ 
+              fetchedData[elem]._id.country = "Russia";
+            }
+            if( fetchedData[elem]._id.country.indexOf('Green') >= 0){
+              fetchedData[elem]._id.country = "Russia";
+            }
+
+            temp['name'] = fetchedData[elem]._id.country;
+            temp['value'] = fetchedData[elem].count;
+
+            data.push(temp);
+            
+        }
+
+    // Initiate the chart
+    $('#container').highcharts('Map', {
+
+        title : {
+            text : 'Visitors By Country'
+        },
+
+        colors: ['rgba(19,64,117,0.05)', 'rgba(19,64,117,0.2)', 'rgba(19,64,117,0.4)',
+                    'rgba(19,64,117,0.5)', 'rgba(19,64,117,0.6)', 'rgba(19,64,117,0.8)', 'rgba(19,64,117,1)'],
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+
+        colorAxis: {
+                    dataClasses: [{
+                        to: 3
+                    }, {
+                        from: 3,
+                        to: 10
+                    }, {
+                        from: 10,
+                        to: 30
+                    }, {
+                        from: 30,
+                        to: 100
+                    }, {
+                        from: 100,
+                        to: 300
+                    }, {
+                        from: 300,
+                        to: 1000
+                    }, {
+                        from: 1000
+                    }]
+                },
+
+        series : [{
+            data : data,
+            colorByPoint: true,
+            mapData: Highcharts.maps['custom/world'],
+            joinBy: 'name',
+            name: 'Visitors ',
+            states: {
+                hover: {
+                    color: '#BADA55'
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                format: '{point.name}'
+            }
+        }]
+    });
+}
+
+
     $(document).ready(function () {
         function displayMostVisitedPages(dateString) {
-            $(".mostVisitedPages").show();
-            var url = "/mostVisitedPage/" + dateString;
+            //$(".mostVisitedPages").show();
+            var url = "/groupByCountry/" + dateString;
             $.get(url).done(function (data) {
-                $("#mostVisitedtbody").html("");
-                var row = '<tr><th scope="row">placeholder_for_i</th><td>placeholder_for_first_field</td><td>placeholder_for_second_field</td></tr>';
-                for (var i = 0; i < data.length; i++) {
-                    $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
-                }
+
+                console.log(data);
+                drawChart(data);
+
             });
         }
+
 
         $("#datePicked").datepicker({
             dateFormat: 'yymmdd',

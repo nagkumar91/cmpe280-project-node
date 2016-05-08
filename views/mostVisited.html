@@ -52,11 +52,14 @@
                 <li ><a href="#">Old Data </a></li>
                 <li><a href="/liveMap">Live Map</a></li>
                 <li class="active"><a href="/mostVisited">Most Visited<span class="sr-only">(current)</span></a></li>
+                <li><a href="/mapOldData">Old Map Data</a></li>
+                <li><a href="/statusPie">Page Status Pie</a></li>
+
 
             </ul>
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Old Data</h1>
+            <h1 class="page-header">Most Visited</h1>
 
             <input type="text" id="datePicked">
 
@@ -100,7 +103,7 @@
                     text: 'Most Visited Website Pages'
                 },
                 xAxis: {
-                    categories:pages,// ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+                    categories:pages,
                     title: {
                         text: null
                     }
@@ -138,7 +141,7 @@
                 },
                 series: [{
                     name: 'Hits',
-                    data: hits//[107, 31, 635, 203, 2]
+                    data: hits
                 }]
             });
         };
