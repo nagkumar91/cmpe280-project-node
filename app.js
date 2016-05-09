@@ -208,8 +208,13 @@ function tailLog() {
                 console.log(error);
             }
             else {
-                if(!body){
-                if (!body.startsWith("<!DOCTYPE")) {
+               if (!String.prototype.startsWith) {
+                 String.prototype.startsWith = function(searchString, position){
+                  position = position || 0;
+                     return this.substr(position, searchString.length) === searchString;
+                };
+                }
+                if (!body.startsWith("<!DOCTYPE",0)) {
                     var b = JSON.parse(body);
                     var payload = {
                         latitude: b['latitude'],
@@ -218,7 +223,7 @@ function tailLog() {
                         region: b['region'],
                         city: b['city'],
                         status: status,
-                        timestamp: dateTimeStamp,
+                       timestamp: dateTimeStamp,
                         uri: webPage
                     };
                     console.log(payload)
@@ -228,7 +233,7 @@ function tailLog() {
                     console.log(payload)  
                     io.emit('channel_to_send_data', payload);
                }
-           }
+         
 
             }
         });
@@ -268,12 +273,20 @@ app.get('/mostVisited', function(req, res)  {
    res.sendFile(__dirname + "/views/mostVisited.html");
 });
 
-app.get('/mapOldData', function(req, res)  {
+app.get('/mapOldDta', function(req, res)  {
    res.sendFile(__dirname + "/views/mapOldData.html");
 });
 
 app.get('/statusPie', function(req, res)  {
    res.sendFile(__dirname + "/views/statusPie.html");
+});
+
+app.get('/aboutUs', function(req, res)  {
+   res.sendFile(__dirname + "/views/about_us.html");
+});
+
+app.get('/contact', function(req, res)  {
+   res.sendFile(__dirname + "/views/locations_new.html");
 });
 
 app.get('/hourlyData/:customDate', function (req, res) {

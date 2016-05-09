@@ -1,0 +1,146 @@
+#header-carousel {
+        height: 500px;
+      }#cazza1 {
+        height: 500px;
+        background-image: url(images/index/1.png);
+        background-position: center center;
+        background-size: contain;
+      }#cazza2 {
+        height: 500px;
+        background-image: url(images/index/2.jpg);
+        background-position: center center;
+        background-size: contain;
+      }#cazza3 {
+        height: 500px;
+        background-image: url(images/index/iot.jpg);
+        background-position: center center;
+        background-size: contain;
+      }#cazza4 {
+        height: 500px;
+        background-position: center center; 
+        background-size: contain;
+      }
+
+.col-md-4{padding: 0px !important;}
+.row{margin: 0px !important;height: 30%}
+
+.col-md-4{height: 100%;}
+button a{color: #fff;}
+.carousel-caption h1{background-color: #222;opacity: 0.75}
+
+
+.navbar-default {
+    border-color: transparent;
+    background-color: #222;
+}
+
+.navbar-default .navbar-brand {
+    font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+    color: #1ee2e7;
+}
+
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus,
+.navbar-default .navbar-brand:active,
+.navbar-default .navbar-brand.active {
+    color: #fec503;
+}
+
+.navbar-default .navbar-collapse {
+    border-color: rgba(255,255,255,.02);
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #1ee2e7;
+    background-color: #1ee2e7;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #1ee2e7;
+}
+
+.navbar-default .nav li a {
+    text-transform: uppercase;
+    font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+.navbar-default .nav ul li a {   
+    color: black !important;
+}
+
+.navbar-default .nav li a:hover,
+.navbar-default .nav li a:focus {
+    outline: 0;
+    color: #1ee2e7;
+}
+
+.navbar-default .navbar-nav>.active>a {
+    border-radius: 0;
+    color: #fff;
+    background-color: #1ee2e7;
+}
+
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    color: #fff;
+    background-color: #17d0d5;
+}
+
+@media(min-width:768px) {
+    .navbar-default {
+        padding: 25px 0;
+        border: 0;
+        background-color: transparent;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+    }
+
+    .navbar-default .navbar-brand {
+        font-size: 2em;
+        -webkit-transition: all .3s;
+        -moz-transition: all .3s;
+        transition: all .3s;
+    }
+
+    .navbar-default .navbar-nav>.active>a {
+        border-radius: 3px;
+    }
+
+    .navbar-default.navbar-shrink {
+        padding: 10px 0;
+        background-color: #222;
+    }
+
+    .navbar-default.navbar-shrink .navbar-brand {
+        font-size: 1.5em;
+    }
+}
+
+
+.portfolio-item{
+    height: 10%;
+}
+
+#downloadBd{cursor: pointer;}
+.download-bd{width: 50%;height: 50%;position: absolute;top:50%;left:25%;border: 1px solid #222;background-color: #fff;padding: 2px;display:none;z-index: 15;border-radius: 4px;}
+#close-img-bd{position: absolute;height: 32px !important;width: 32px !important;left:96%;bottom: 94%;background-color:#eee;cursor: pointer; border-radius: 50%}
+.download-bd h3{background-color: #2980b9;color:#ecf0f1 }
+
+
+@media (max-width: 767px){
+.navbar-default .navbar-nav .open .dropdown-menu>li>a {
+    color: white !important;
+}
+#guavus{
+    display: none;
+}
+}

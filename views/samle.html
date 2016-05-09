@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Dashboard</a>
+        </div>
+
+    </div>
+</nav>
+ -->
+<div class="container-fluid">
+    <div class="row">
+        
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Page hits Status Pie</h1>
+
+            <input type="text" id="datePicked">
+
+            <div class="row">
+            <div id="container"></div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<!--<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+<script>
+function drawChart(fetchedData) {
+
+
+    temp={};
+    for(elem=0;elem<fetchedData.length;elem++){
+        if(temp[fetchedData[elem]._id.status_code] == null){
+            temp[fetchedData[elem]._id.status_code] = 1;
+        }
+        else{
+            temp[fetchedData[elem]._id.status_code] = temp[fetchedData[elem]._id.status_code]+1;
+        }
+
+        }
+    statusJson=[
+    {
+        name:200,
+        y:temp[200],
+        drilldown:200
+    },
+    {
+        name:202,
+        y:temp[202],
+        drilldown:202
+    },
+    {
+        name:204,
+        y:temp[204],
+        drilldown:204
+    },
+    {
+        name:300,
+        y:temp[300],
+        drilldown:300
+    },
+    {
+        name:301,
+        y:temp[301],
+        drilldown:301
+    },
+    {
+        name:302,
+        y:temp[302],
+        drilldown:302
+    },
+    {
+        name:400,
+        y:temp[400],
+        drilldown:400
+    },
+    {
+        name:401,
+        y:temp[401],
+        drilldown:401
+    },
+    {
+        name:404,
+        y:temp[404],
+        drilldown:404
+    },
+    {
+        name:407,
+        y:temp[407],
+        drilldown:407
+    },
+    {
+        name:408,
+        y:temp[408],
+        drilldown:408
+    },
+    {
+        name:500,
+        y:temp[500],
+        drilldown:500
+    },
+    {
+        name:502,
+        y:temp[502],
+        drilldown:502
+    },
+    {
+        name:407,
+        y:temp[407],
+        drilldown:407
+    }]
+        console.log(statusJson);
+
+    // Create the chart
+    $('#container').highcharts({
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Website Page Hits Status Codes'
+        },
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y:.1f}%'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+        },
+        series: [{
+            name: 'Status',
+            colorByPoint: true,
+            data: statusJson
+        }]
+    });
+};
+
+    $(document).ready(function () {
+        function displayMostVisitedPages(dateString) {
+            //$(".mostVisitedPages").show();
+            var url = "/pieForStatusCodeGrouped/" + dateString;
+            $.get(url).done(function (data) {
+
+                console.log(data);
+                drawChart(data);
+
+            });
+        }
+
+
+        $("#datePicked").datepicker({
+            dateFormat: 'yymmdd',
+            onSelect: function (dateText, inst) {
+                var dateStringForApi = $(this).val();
+                //use this datestring to amke api calls.
+                displayMostVisitedPages(dateStringForApi);
+            }
+        })
+    });
+
+    (function () {
+        'use strict';
+
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+            var msViewportStyle = document.createElement('style');
+            msViewportStyle.appendChild(
+                    document.createTextNode(
+                            '@-ms-viewport{width:auto!important}'
+                    )
+            );
+            document.querySelector('head').appendChild(msViewportStyle)
+        }
+
+    })();
+</script>
+
+</body>
+</html>

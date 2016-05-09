@@ -1,0 +1,111 @@
+  
+      
+              
+     
+      
+     
+
+ <link rel="stylesheet" href="/stylesheets/locations.css">
+      <style type="text/css">
+              #header-carousel {
+                height: 750px;
+              }#cazza3 {
+                height: 750px;
+                background-image: url(/images/slider/iot.jpg);
+                background-position: center center;
+                background-size: cover;
+              }
+
+       
+      </style>
+
+      <script type="text/javascript">
+        $(function() {
+          $('a.page-scroll').bind('click', function(event) {
+              var $anchor = $(this);
+              $('html, body').stop().animate({
+                  scrollTop: $($anchor.attr('href')).offset().top
+              }, 1500, 'easeInOutExpo');
+              event.preventDefault();
+          });
+        });
+
+        // Highlight the top nav as scrolling occurs
+        $('body').scrollspy({
+            target: '.navbar-fixed-top'
+        })
+
+        // Closes the Responsive Menu on Menu Item Click
+        $('.navbar-collapse ul li a').click(function() {
+            $('.navbar-toggle:visible').click();
+        });
+     
+
+
+      </script>
+
+      <section>
+      <div class="container-fluid">
+
+        <div class="row" style="padding-top:50px;">
+          <h2 class="text" style="padding-left:100px;">Locations</h2>
+          <div class="col-md-1">
+          </div>          
+          <div class="col-md-5">
+            <span class="flag us"></span>
+            <h3>USA </h3>
+            <p>Stream Inc.<br>
+              Customer Service
+              PO Box 81226<br>
+              Seattle, WA 98108-1226 
+            </p>  
+          </div>
+          <div class="col-md-5">
+            <span class="flag in"></span> 
+            <h3>India </h3>
+            <p>Stream Inc,<br/>
+            Pune, Maharashtra, India 411057, India<br/>
+            Phone:  +91 40 5519 3300
+            </p>                        
+          </div> 
+          <div class="col-md-1">
+          </div>             
+        </div>
+
+        <div class="row text-center">
+          <div class="col-md-12">
+            <div style="width:100%; height:100%;position: absolute;">
+              <div id="map-canvas"></div>
+            </div>
+          </div>                               
+        </div>         
+      </div>
+    </section>
+    
+    <script type="text/javascript">
+function initialize() {
+  var myLatlng = new google.maps.LatLng(18.5947,73.7095);
+  var myLatlng1 = new google.maps.LatLng( 37.279518,-121.867905);
+  var mapOptions = {
+    zoom:3,
+    center: new google.maps.LatLng(38.7948264,-13.0847678)
+  }
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  var marker = new google.maps.Marker({
+      position: myLatlng,
+      map: map
+  });
+  var marker = new google.maps.Marker({
+      position: myLatlng1,
+      map: map
+  });
+}  
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+    </script>
+      
+   
