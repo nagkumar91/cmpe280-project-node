@@ -1,16 +1,65 @@
-<title>Old Data</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Old Data</title>
+    <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <!-- Custom styles for this template -->
+    <link href="/stylesheets/dashboard.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Dashboard</a>
+        </div>
+
+    </div>
+</nav>
+
 <div class="container-fluid">
     <div class="row">
-        
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/">Overview </a></li>
+                <li class="active"><a href="#">Old Data <span class="sr-only">(current)</span></a></li>
+            </ul>
+        </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header">Old Data</h1>
 
             <input type="text" id="datePicked">
-
-            <div class="row">
-                <div class="mostVisitedPages" style="display: none">
+			<div class="row">
+                <div class="mostVisitedPages table-responsive " style="display: none">
                     <h4>Most visited pages</h4>
-                    <table class="table table-bordered">
+                    <table class="table table-hover">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -25,15 +74,22 @@
                     </table>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
 
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<!--<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 
 <script>
     $(document).ready(function () {
-        function displayMostVisitedPages(dateString) {
+       function displayMostVisitedPages(dateString) {
             $(".mostVisitedPages").show();
             var url = "/mostVisitedPage/" + dateString;
             $.get(url).done(function (data) {
@@ -50,11 +106,146 @@
             onSelect: function (dateText, inst) {
                 var dateStringForApi = $(this).val();
                 //use this datestring to amke api calls.
+                /*
+                 make a call to mapDataOldData API of get the count for lat-long for selected date
+                 */
+                var url = "/mapDataOldData/" + dateStringForApi;
+                var latarr = new Array();
+                var lngarr = new Array();
+                var countarr = new Array();
+                var lat = "";
+                var lng = "";
+                var count = "";
+                $.get(url).done(function (data) {
+                    for (i = 0; i < data.length; i++) {
+                        lat = data[i]["_id"]["lat"];
+                        lng = data[i]["_id"]["lng"];
+                        count = data[i]["count"];
+                        console.log(i + "   lat:  " + lat + "  lng:  " + lng + "   count:  " + count);
+                        latarr.push(lat);
+                        lngarr.push(lng);
+                        countarr.push(count);
+                    }
+                    drawchart(latarr, lngarr, countarr, dateStringForApi);
+                    var url = "/mapDataOldDataPieChart/" + dateStringForApi;
+                    var statusarray = new Array();
+                    var statuscountarray = new Array();
+                    var status = "";
+                    var statuscount = "";
+                    $.get(url).done(function (data) {
+                       // console.log(data);
+                        for (i = 0; i < data.length; i++) {
+                            status = data[i]["_id"]["status"];
+                            statuscount = data[i]["count"];
+                            console.log(i + "   status:  " + status + "  statuscount:  " + statuscount);
+                            statusarray.push(status);
+                            statuscountarray.push(statuscount);
+                        }
+                       // drawPieChart(statusarray,statuscountarray,dateStringForApi);
+                    });
+                });
+
+
                 displayMostVisitedPages(dateStringForApi);
             }
         })
     });
 
+    /**
+     * Function that draws the basic  chart
+     * @param latarr
+     * @param lngarr
+     * @param countarr
+     * @param dateStringForApi
+     */
+    var drawchart = function (latarr, lngarr, countarr, dateStringForApi) {
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        var year = dateStringForApi.substring(0, 4);
+        var month = parseInt(dateStringForApi.substring(4, 6), 10) - 1;
+
+        var date = dateStringForApi.substring(6, 8);
+        var chart = new CanvasJS.Chart("chartContainer1", {
+            theme: "theme2",//theme1
+            title: {
+                text: "Logs for " + date + " " + monthNames[month] + " " + year
+            },
+            animationEnabled: true,   // change to true
+            data: [
+                {
+                    // Change type to "bar", "area", "spline", "pie",etc.
+                    type: "column",
+                    dataPoints: [
+                        {label: latarr[0] + " " + lngarr[0], y: countarr[0]},
+                        {label: latarr[1] + " " + lngarr[1], y: countarr[1]},
+                        {label: latarr[2] + " " + lngarr[2], y: countarr[2]},
+                        {label: latarr[3] + " " + lngarr[3], y: countarr[3]},
+                        {label: latarr[4] + " " + lngarr[4], y: countarr[4]}
+                    ]
+                }
+            ]
+        });
+        chart.render();
+    }
+
+/*
+    var drawPieChart = function(statusarray,statuscountarray,dateStringForApi){
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        var year = dateStringForApi.substring(0, 4);
+        var month = parseInt(dateStringForApi.substring(4, 6), 10) - 1;
+
+        var date = dateStringForApi.substring(6, 8);
+        var chart = new CanvasJS.Chart("chartContainer2",
+                {
+                    title:{
+                        text: "Pie chart for  " + date + " " + monthNames[month] + " " + year
+                    },
+                    animationEnabled: true,
+                    legend:{
+                        verticalAlign: "bottom",
+                        horizontalAlign: "center"
+                    },
+                    data: [
+                        {
+                            indexLabelFontSize: 20,
+                            indexLabelFontFamily: "Monospace",
+                            indexLabelFontColor: "darkgrey",
+                            indexLabelLineColor: "darkgrey",
+                            indexLabelPlacement: "outside",
+                            type: "pie",
+                            showInLegend: true,
+                            toolTipContent: "{y} - <strong>#percent%</strong>",
+                            dataPoints: [
+                                {  y: statuscountarray[0], legendText:statusarray[0], indexLabel: statusarray[0] },
+                                {  y: statuscountarray[1], legendText:statusarray[1], indexLabel: statusarray[1]},
+                                {  y: statuscountarray[2], legendText:statusarray[2],exploded: true, indexLabel: statusarray[2]},
+                                {  y: statuscountarray[3], legendText:statusarray[3] , indexLabel: statusarray[3]},
+                                {  y: statuscountarray[4], legendText:statusarray[4], indexLabel: statusarray[4] },
+                                {  y: statuscountarray[5], legendText:statusarray[5] , indexLabel: statusarray[5]},
+                                {  y: statuscountarray[6], legendText:statusarray[6] , indexLabel: statusarray[6]}
+                            ]
+                        }
+                    ]
+                });
+        chart.render();
+    } 
+	*/
+    </script>
+<!--<div id="chartContainer" style="padding-left:280px;height: 300px; width:50%;"></div>-->
+<div id="chartContainer1" style="margin-left:260px; width:50%; height:300px"></div>
+<br><br>
+<script>
     (function () {
         'use strict';
 
@@ -70,5 +261,5 @@
 
     })();
 </script>
-
-
+</body>
+</html>
