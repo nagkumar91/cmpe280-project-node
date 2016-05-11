@@ -1,21 +1,35 @@
 <title>Old Data</title>
-<div class="container-fluid">
-    <div class="row">
+<style type="text/css">
+
+input{
+
+    max-width: 20%;
+}
+
+.bg{
+
+    background: radial-gradient(ellipse at center, #1c474e 0%, #0e1d20 100%);
+}
+</style>
+<div class="container-fluid content-wrapper bg">
+    <div class="row form-group" align="middle">
         
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Old Data</h1>
+        <div class="main ">
+            <h1 class="page-header fontColor">Old Data</h1>
 
-            <input type="text" id="datePicked">
+            <input class="form-control datelength" type="text" id="datePicked"  >
 
-            <div class="row">
-                <div class="mostVisitedPages" style="display: none">
-                    <h4>Most visited pages</h4>
-                    <table class="table table-bordered">
+            <div style="height: 70px;"> </div>
+          <div class="row">
+          <div class="col-md-6 col-md-offset-3" align ="middle">  
+                <div class="mostVisitedPages table-responsive " style="display: none">
+                    <h4 class="fontColor">Most visited pages</h4>
+                    <table class="table table-hover" id="oldDataTable">
                         <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Page</th>
-                            <th>Count</th>
+                            <th class="fontColor">#</th>
+                            <th class="fontColor">Page</th>
+                            <th class="fontColor">Count</th>
                         </tr>
                         </thead>
                         <tbody id="mostVisitedtbody">
@@ -25,6 +39,7 @@
                     </table>
                 </div>
             </div>
+        </div>
 
         </div>
     </div>
@@ -42,6 +57,7 @@
                 for (var i = 0; i < data.length; i++) {
                     $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
                 }
+                $('#oldDataTable').DataTable();
             });
         }
 

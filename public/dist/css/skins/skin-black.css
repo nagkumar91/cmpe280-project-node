@@ -14,11 +14,11 @@
   color: #333;
   border-right: 1px solid #eee;
 }
-.skin-black .main-header > .navbar {
-  /*background-color: #AA0000;*/
+/*.skin-black .main-header > .navbar {
+  background-color: #AA0000;
   background-color: #033941;
 
-}
+}*/
 .skin-black .main-header > .navbar .nav > li > a {
   color: #333333;
 }
@@ -52,7 +52,6 @@
   border-right-width: 0;
 }
 .skin-black .main-header > .logo {
-  background-color: #033941;
   color: #333333;
   border-bottom: 0 solid transparent;
   border-right: 1px solid #eee;
@@ -81,7 +80,6 @@
 .skin-black .wrapper,
 .skin-black .main-sidebar,
 .skin-black .left-side {
-  background-color: #222d32;
   height: 100%;
 }
 .skin-black .user-panel > .info,

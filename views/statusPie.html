@@ -1,24 +1,37 @@
 
-    
+  <style type="text/css">
+  .bg{
+
    
- <div class="row">
-
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header">Page hits Status Pie</h1>
-
-            <input type="text" id="datePicked">
-            <div class="row">
-            <div id="container"></div>
+  }
 
 
+input{
+
+    max-width: 20%;
+}
+
+  </style>  
+  <div class="wrapper"> 
+ <div class="row bg form-group"  align="middle" >
+
+        <div class="main">
+            <h1 class="page-header fontColor">Page Hits Status Pie</h1>
+
+            <input type="text" id="datePicked" class="form-control">
+            <div style="height: 70px;"> </div>
+          <div class="row">
+          <div class="col-md-6 col-md-offset-3" align ="middle">             
+           <div id="container"></div>
             </div>
-
+          </div>  
         </div>
     </div>
+</div>
 
 <script>
 function drawChart(fetchedData) {
-    alert("drawChart")
+  
     temp={};
     for(elem=0;elem<fetchedData.length;elem++){
         if(temp[fetchedData[elem]._id.status_code] == null){
@@ -102,19 +115,33 @@ function drawChart(fetchedData) {
     }]
         console.log(statusJson);
 
+
+
     // Create the chart
     $('#container').highcharts({
         chart: {
-            type: 'pie'
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            backgroundColor: 'rgba(0, 0, 0, 0)'
+    
         },
         title: {
-            text: 'Website Page Hits Status Codes'
+            text: 'Website Page Hits Status Codes',
+            style: {
+                     color: '#FFFFFF',
+                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+                }
         },
         plotOptions: {
             series: {
                 dataLabels: {
                     enabled: true,
-                    format: '{point.name}: {point.y:.1f}%'
+                    format: '{point.name}: {point.y:.1f}%',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
                 }
             }
         },

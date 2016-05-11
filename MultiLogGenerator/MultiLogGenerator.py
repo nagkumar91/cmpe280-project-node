@@ -114,14 +114,15 @@ def multipleConcurrentWrite():
 	remove_chars = len(os.linesep)
 	cur_path = os.getcwd();
 	new_path = os.path.relpath(fileName, cur_path)
-	logFile=open(new_path, 'a')
+	
 	i=0;
 	while True:
+		logFile=open(new_path, 'a')
 		writeToTheLog(logEntriesGenerator(),logFile);
 		i=i+1;
 		print(i)
-		sleep(1)
-	logFile.close()	
+		#sleep(0.5)
+		logFile.close()
 
 
 if __name__ == "__main__":

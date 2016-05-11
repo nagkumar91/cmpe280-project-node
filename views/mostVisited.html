@@ -1,22 +1,77 @@
 <title>Most Visited Sites</title>
-<div class="container-fluid">
-    <div class="row">
+<style type="text/css">
+.wrapper {
+  display: table;
+  width: 100%;
+}
 
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+.element {
+  display: table-cell;
+  width: 50%;
+}
+
+#container{width:100% !important; height:100% !important;}
+
+.bg{
+
+    background: radial-gradient(ellipse at center, #1c474e 0%, #0e1d20 100%);
+}
+
+input{
+
+    max-width: 20%;
+}
+
+.borderHeader{
+
+    background-color: #333333;
+}
+</style>
+<div class="wrapper bg">
+   <!--  <div class="row">
+
+      
             <h1 class="page-header">Most Visited</h1>
 
             <input type="text" id="datePicked">
-
-            <div class="row">
+            <div class="container">
+            <div class="row element">
             <div id="container" style="min-width: 310px; max-width: 800px; height: 400px;"></div>
 
             </div>
-
         </div>
-    </div>
-</div>
 
+     
+    </div>
+</div> -->
+<div class="row form-group" align="middle">
+                 <h3 class="box-title fontColor">Most Visited Sites</h3>
+            <input type="text" id="datePicked" class="form-control" align="middle">
+            </div>
+            <div style="height: 100px;"> </div>
+          <div class="row">
+          <div class="col-md-6 col-md-offset-3" align ="middle">  
+        <!-- <div class="box box-info">  -->          
+           <!--  <div class="box-header borderHeader"> 
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div> -->
+
+            <div class="box-body bg">
+              <div class="chart">
+                <div id="container" class="container-fluid" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+              </div>
+            </div>
+            <!-- /.box-body -->
+        <!-- </div> -->
+    </div>
+          </div>
+</div>
 <script>
+
 
     function drawChart(data) {
         pages=[];
@@ -27,33 +82,57 @@
             hits.push(data[elem].count);
             
         }
+
+      
             $('#container').highcharts({
                 chart: {
-                    type: 'bar'
+                    type: 'column',
+            zoomType: 'xy',
+            backgroundColor: 'rgba(0,0,0,0.5)'
                 },
                 title: {
+                    style: {
+                     color: '#FFFFFF',
+                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+                },
                     text: 'Most Visited Website Pages'
                 },
                 xAxis: {
                     categories:pages,
                     title: {
                         text: null
+                    },
+                    labels:{
+                         style: {
+                     color: '#FFFFFF',
+                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+                }
                     }
+
                 },
                 yAxis: {
                     min: 0,
                     title: {
                         text: 'Hits',
-                        align: 'high'
+                        align: 'high',
+                         style: {
+                     color: '#FFFFFF',
+                    font: ' 16px "Trebuchet MS", Verdana, sans-serif'
+                }
                     },
                     labels: {
-                        overflow: 'justify'
+                        overflow: 'justify',
+                         style: {
+                     color: '#FFFFFF',
+                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+                }
                     }
                 },
                 plotOptions: {
                     bar: {
                         dataLabels: {
                             enabled: true
+
                         }
                     }
                 },
@@ -74,9 +153,12 @@
                 series: [{
                     name: 'Hits',
                     data: hits
+
                 }]
             });
-        };
+            
+        
+    };
 
     $(document).ready(function () {
         function displayMostVisitedPages(dateString) {
@@ -89,6 +171,16 @@
 
             });
         }
+
+        // Setup
+
+$('#container').css('width', '690px');
+$(window).trigger("resize");
+
+// Teardown
+
+$('#container').css('width', '');
+$(window).trigger("resize");
 
 
         $("#datePicked").datepicker({
