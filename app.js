@@ -102,9 +102,6 @@ function tailLog() {
     var regStatus='(200|202|204|300|301|302|400|401|404|407|408|500|502|504)';
    // var pStatus = new RegExp(re1 + re42 + re3 + re4 + re5 + re6 + re7 + re8 + re9 + re10 + re11 + re12 + re13 + re14 + re15 + re16 + re17 + re18 + re19 + re20 + re21 + re22 + re23 + re24 + re25 + re26 + re27 + re28 + re29 + re30, ["i"]);
 
-    var pStatus=new RegExp(re1+regStatus,["i"]);
-
-    //Regex for timestamp
     var red1 = '((?:(?:[0-2]?\\d{1})|(?:[3][01]{1}))[-:\\/.](?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[-:\\/.](?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])';  // DDMMMYYYY 1
     var red2 = '.*?';   // Non-greedy match on filler
     var red3 = '((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)';    // HourMinuteSec 1
@@ -154,7 +151,7 @@ function tailLog() {
         PostCode(requestAddress, ipadd, ipaddr, status, dateTimeStamp, webPage);
     };
 
-    var getStatus = function (txt) {
+   var getStatus = function (txt) {
 
         var stats = pStatus.exec(txt);
         if (stats != null) {
@@ -178,7 +175,7 @@ function tailLog() {
     };
 
 
-    var getPageAccessed = function (txt) {
+     var getPageAccessed = function (txt) {
 
 
         var pageAccessed = pgAccessed.exec(txt);
@@ -272,6 +269,7 @@ app.get('/liveMap', function(req, res)  {
 app.get('/mostVisited', function(req, res)  {
    res.sendFile(__dirname + "/views/mostVisited.html");
 });
+
 
 app.get('/mapOldDta', function(req, res)  {
    res.sendFile(__dirname + "/views/mapOldData.html");
@@ -385,6 +383,7 @@ app.get('/mostVisitedPage/:customDate', function (req, res) {
     })
 });
 
+
 app.get('/mapDataOldData/:customDate', function (req, res) {
     var collection_name = "collection_" + req.params.customDate;
     var collection_model = mongoose.model(collection_name, mongooseLogSchema);
@@ -393,9 +392,7 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
             $group: {
                 _id: {
                     lat: "$latitude",
-                    lng: "$longitude",
-                    city:"$city",
-                    country:"$country"
+                    lng: "$longitude"
                 },
                 count: {
                     $sum: 1
@@ -404,7 +401,46 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
         },
         {
             $sort: {
-                count: -1
+               // _id: -1
+				count :-1
+            }
+        }
+    ], function (err, docs) {
+        if (err) {
+            console.log("Error!");
+        }
+        else {
+            //res.send(docs); 
+			 res.send(docs.slice(0, 5));
+        }
+    })
+});
+
+/**
+ * Code for Pie CHART
+ */
+
+
+
+app.get('/mapDataOldDataPieChart/:customDate', function (req, res) {
+    var collection_name = "collection_" + req.params.customDate;
+    var collection_model = mongoose.model(collection_name, mongooseLogSchema);
+    collection_model.aggregate([
+        {
+            $group: {
+                _id: {
+                    status: "$status",
+                    //lng: "$longitude"
+                },
+                count: {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort: {
+                 _id: -1
+                //count :-1
             }
         }
     ], function (err, docs) {
@@ -413,9 +449,13 @@ app.get('/mapDataOldData/:customDate', function (req, res) {
         }
         else {
             res.send(docs);
+           // res.send(docs.slice(0, 5));
         }
     })
 });
+
+
+//END : Code for PIE chart
 
 app.get('/groupByCountry/:customDate', function (req, res) {
     var collection_name = "collection_" + req.params.customDate;
@@ -491,8 +531,6 @@ app.get('/listAllDates', function (req, res) {
 
     }))
 });
-
-
 
 
 http.listen(3000, function () {
