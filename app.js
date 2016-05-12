@@ -101,7 +101,7 @@ function tailLog() {
    //200,202,204,300,301,302,400,401,404,407,408,500,502,504
     var regStatus='(200|202|204|300|301|302|400|401|404|407|408|500|502|504)';
    // var pStatus = new RegExp(re1 + re42 + re3 + re4 + re5 + re6 + re7 + re8 + re9 + re10 + re11 + re12 + re13 + re14 + re15 + re16 + re17 + re18 + re19 + re20 + re21 + re22 + re23 + re24 + re25 + re26 + re27 + re28 + re29 + re30, ["i"]);
-
+      var pStatus=new RegExp(re1+regStatus,["i"]);		
     var red1 = '((?:(?:[0-2]?\\d{1})|(?:[3][01]{1}))[-:\\/.](?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[-:\\/.](?:(?:[1]{1}\\d{1}\\d{1}\\d{1})|(?:[2]{1}\\d{3})))(?![\\d])';  // DDMMMYYYY 1
     var red2 = '.*?';   // Non-greedy match on filler
     var red3 = '((?:(?:[0-1][0-9])|(?:[2][0-3])|(?:[0-9])):(?:[0-5][0-9])(?::[0-5][0-9])?(?:\\s?(?:am|AM|pm|PM))?)';    // HourMinuteSec 1
