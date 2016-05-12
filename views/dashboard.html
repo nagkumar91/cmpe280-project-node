@@ -86,7 +86,9 @@ background-repeat: repeat-x, repeat;*/
 
 
     #mainPage{
-    background: radial-gradient(ellipse at center, #1c474e 0%, #0e1d20 100%);
+/*    background: radial-gradient(ellipse at center, #1c474e 0%, #0e1d20 100%);
+*/background-color: #2B383F;
+
 }
 
 
@@ -180,6 +182,16 @@ footer{
        $(document).ready(function() { 
        /* $('#mainPage').load("liveMap");*/
 
+       if(localStorage.getItem("frameValue") == null){
+            $("#mapframe").attr("src","liveMap");
+       }
+       else if(localStorage.getItem("frameValue") == "contact"){
+            $("#mapframe").attr("src","contact");
+       }
+       else if(localStorage.getItem("frameValue") == "liveMap"){
+            $("#mapframe").attr("src","liveMap");
+       }
+
         $('.navbar').addClass('navbarnottransperant');
         $('.main-sidebar').addClass('navbarnottransperant');
 
@@ -257,15 +269,15 @@ footer{
             $('.navbar').addClass('navbarnottransperant');
             $('.main-sidebar').addClass('navbarnottransperant');
             $('#navtoggle').click();
-            $("#mapframe").attr("src","contact");
-
+            localStorage.setItem("frameValue", "contact");
+            location.reload();
 
         });
 
          $('#liveMap').click(function(event){
           
              event.preventDefault();
-         
+           localStorage.setItem("frameValue", "liveMap");
            location.reload();
             $('#navtoggle').click();
             $('.navbar').removeClass('navbarnottransperant');
