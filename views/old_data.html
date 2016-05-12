@@ -30,6 +30,13 @@ input{
 .paginate_button{
     color:white !important;
 }
+@media screen and (max-width: 1024px) {
+#colChartCol{
+    padding-top:100px;
+    padding-bottom: 100px;
+}
+
+}
 </style>
 <div class="container-fluid">
     <div class="row form-group" align="middle">
@@ -60,12 +67,14 @@ input{
                         </tbody>
                     </table>
         </div>
-        <div class="col-md-6">
-            
-            <div id="chartContainer1" style=" width:80%; height:100%" ></div>
-         </div>
+        <div class="col-md-6" id="colChartCol">
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<!--             <div id="chartContainer1"  style="min-height: 500px;"></div>
+ -->    </div>
      </div>
 </div>
+
 
 <script>
     $(document).ready(function () {
@@ -107,7 +116,8 @@ input{
                         lngarr.push(lng);
                         countarr.push(count);
                     }
-                    drawchart(latarr, lngarr, countarr, dateStringForApi);
+                    //drawchart(latarr, lngarr, countarr, dateStringForApi);
+                    colChart(latarr, lngarr, countarr, dateStringForApi);
                     var url = "/mapDataOldDataPieChart/" + dateStringForApi;
                     var statusarray = new Array();
                     var statuscountarray = new Array();
@@ -140,6 +150,10 @@ input{
      * @param dateStringForApi
      */
     var drawchart = function (latarr, lngarr, countarr, dateStringForApi) {
+
+
+
+
         var monthNames = [
             "January", "February", "March",
             "April", "May", "June", "July",
@@ -154,7 +168,7 @@ input{
         var chart = new CanvasJS.Chart("chartContainer1", {
             theme: "theme2",//theme1
             title: {
-                text: "Latitude and Longitude count for " + date + " " + monthNames[month] + " " + year
+                text: "Logs for " + date + " " + monthNames[month] + " " + year
             },
             animationEnabled: true,   // change to true
             data: [
@@ -176,6 +190,277 @@ input{
         });
         chart.render();
     }
+
+
+
+
+
+function colChart(latarr, lngarr, countarr, dateStringForApi) {
+/**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: 'https://fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      style: {
+         fontFamily: "'Unica One', sans-serif"
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+    var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+
+        var year = dateStringForApi.substring(0, 4);
+        var month = parseInt(dateStringForApi.substring(4, 6), 10) - 1;
+
+        var date = dateStringForApi.substring(6, 8);
+
+    $('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: "Logs for " + date + " " + monthNames[month] + " " + year
+        },
+        subtitle: {
+            text: 'Source: ApacheInsights'
+        },
+        xAxis: {
+            categories: [
+                latarr[0] + " " + lngarr[0],
+                latarr[1] + " " + lngarr[1],
+                latarr[2] + " " + lngarr[2],
+                latarr[3] + " " + lngarr[3]
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Hits'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Geo Location',
+            data: [countarr[0],countarr[1],countarr[2],countarr[3]]
+
+        }]
+    });
+};
 
 /*
     var drawPieChart = function(statusarray,statuscountarray,dateStringForApi){
