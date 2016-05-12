@@ -249,7 +249,7 @@ footer{
           
           event.preventDefault();
          
-            $('#mainPage').load("contact")
+            //$('#mainPage').load("contact")
             $('.navbar').css('background-color','#222d32');
             $('.main-sidebar').css('background-color','#222d32');
             $('#navtoggle').css('display','block');
@@ -257,6 +257,7 @@ footer{
             $('.navbar').addClass('navbarnottransperant');
             $('.main-sidebar').addClass('navbarnottransperant');
             $('#navtoggle').click();
+            $("#mapframe").attr("src","contact");
 
 
         });
@@ -339,7 +340,7 @@ footer{
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper" id="mainPage" style="width: 100%">
 
-        <iframe src="liveMap" name="targetframe" allowTransparency="true" scrolling="no" frameborder="0" width='100%' height="700px" class="iframe">
+        <iframe id="mapframe" src="liveMap" name="targetframe" allowTransparency="true" scrolling="no" frameborder="0" width='100%' height="870px" class="iframe">
         </iframe>
 
   </div>
@@ -375,7 +376,6 @@ footer{
 <!-- Data table -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css"> 
 <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/d3.geo.projection.v0.min.js" charset="utf-8"></script>
 </body>

@@ -56,9 +56,7 @@
   border-bottom: 0 solid transparent;
   border-right: 1px solid #eee;
 }
-.skin-black .main-header > .logo:hover {
-  background-color: #ffffff;
-}
+
 @media (max-width: 767px) {
   .skin-black .main-header > .logo {
     background-color: #222222;

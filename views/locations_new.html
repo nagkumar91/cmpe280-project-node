@@ -1,53 +1,33 @@
-  
-      
-              
-     
-      
-     
-
+<!DOCTYPE html>
+<html>
+<head>
+            
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <script type="text/javascript"src="http://maps.google.com/maps/api/js"></script>
  <link rel="stylesheet" href="/stylesheets/locations.css">
-      <style type="text/css">
-              #header-carousel {
-                height: 750px;
-              }#cazza3 {
-                height: 750px;
-                background-image: url(/images/slider/iot.jpg);
-                background-position: center center;
-                background-size: cover;
-              }
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
+  
+<style type="text/css">
+           .bg{
+
+    background: radial-gradient(ellipse at center, #1c474e 0%, #0e1d20 100%);
+}
+body{
+  background-color: transparent;
+}
 
        
       </style>
 
-      <script type="text/javascript">
-        $(function() {
-          $('a.page-scroll').bind('click', function(event) {
-              var $anchor = $(this);
-              $('html, body').stop().animate({
-                  scrollTop: $($anchor.attr('href')).offset().top
-              }, 1500, 'easeInOutExpo');
-              event.preventDefault();
-          });
-        });
-
-        // Highlight the top nav as scrolling occurs
-        $('body').scrollspy({
-            target: '.navbar-fixed-top'
-        })
-
-        // Closes the Responsive Menu on Menu Item Click
-        $('.navbar-collapse ul li a').click(function() {
-            $('.navbar-toggle:visible').click();
-        });
-     
-
-
-      </script>
-
-      <section>
+</head>
+<body>
+  <section>
       <div class="container-fluid wrapper">
 
-        <div class="row" style="padding-top:50px; background-color: rgba(0,0,0,0.5);">
+        <div class="row bg" style="padding-top:50px;">
           <h2 class="text" style="padding-left:100px;">Locations</h2>
           <div class="col-md-1">
           </div>          
@@ -74,38 +54,42 @@
 
         <div class="row text-center">
           <div class="col-md-12">
-            <div style="width:100%; height:100%;position: absolute;">
-              <div id="map-canvas"></div>
-            </div>
-          </div>                               
+                 <div id="map-canvas"></div>
+          </div>
+        </div>
+
+
         </div>         
-      </div>
     </section>
-    
+
     <script type="text/javascript">
-function initialize() {
-  var myLatlng = new google.maps.LatLng(18.5947,73.7095);
-  var myLatlng1 = new google.maps.LatLng( 37.279518,-121.867905);
-  var mapOptions = {
-    zoom:3,
-    center: new google.maps.LatLng(38.7948264,-13.0847678)
-  }
-  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+      function initialize() {
+        var myLatlng = new google.maps.LatLng(18.5947,73.7095);
+        var myLatlng1 = new google.maps.LatLng( 37.279518,-121.867905);
+        var mapOptions = {
+          zoom:3,
+          center: new google.maps.LatLng(38.7948264,-13.0847678)
+        }
+        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        google.maps.event.trigger(map, "resize");
+         
+          marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map
+        });
+        var marker = new google.maps.Marker({
+            position: myLatlng1,
+            map: map
+        });
 
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map
-  });
-  var marker = new google.maps.Marker({
-      position: myLatlng1,
-      map: map
-  });
-}  
+      }  
 
-google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, 'load', initialize);
 
 
 
     </script>
-      
-   
+
+
+</body>
+</html>
