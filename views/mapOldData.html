@@ -23,8 +23,8 @@ input{
 
             <div style="height: 70px;"> </div>
           <div class="row">
-          <div class="col-md-6 col-md-offset-3" align ="middle">  
-            <div id="container"></div>
+          <div class="col-md-12" align ="middle">  
+            <div id="container" style="min-height: 600px;"></div>
 
 
             </div>
@@ -38,13 +38,384 @@ input{
 <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
 
+<style type="text/css">
+#demo-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    height: 560px;
+}
+#mapBox {
+    width: 80%;
+    float: left;
+}
+#container {
+    height: 500px;
+}
+#sideBox {
+    float: right;
+    width: 16%;   
+    margin: 100px 1% 0 1%;
+    padding-left: 1%;
+    border-left: 1px solid silver;
+    display: none;
+}
+#infoBox {
+    margin-top: 10px;
+}
+.or-view-as {
+    margin: 0.5em 0;
+}
+#up {
+    height: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+#up a {
+    cursor: pointer;
+    padding-left: 40px;
+}
+.selector {
+    height: 40px;
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+}
+.selector .prev-next {
+    position: absolute;
+    padding: 0 10px;
+    font-size: 30px;
+    line-height: 20px;
+    background: white;
+    font-weight: bold;
+    color: #999;
+    top: -2px;
+    display: none;
+    border: none;
+}
+.selector .custom-combobox {
+    display: block;
+    position: absolute;
+    left: 40px;
+    right: 110px;
+}
+.selector .custom-combobox .custom-combobox-input {
+    position: absolute;
+    font-size: 14px;
+    color: silver;
+    border-radius: 0;
+    height: 24px;
+    display: block;
+    background: url(https://www.highcharts.com/samples/graphics/search.png) 5px 5px no-repeat white;
+    padding: 1px 5px 1px 30px;
+    width: 100%;
+}
+.selector .custom-combobox .ui-autocomplete-input:focus {
+    color: black;
+}
+.selector .custom-combobox .ui-autocomplete-input.valid {
+    color: black;
+}
+.selector .custom-combobox-toggle {
+    position: absolute;
+    display: block;
+    right: -78px;
+    border-radius: 0;
+}
 
+.selector #btn-next-map {
+    right: -12px;
+}
+.ui-autocomplete {
+    max-height: 500px;
+    overflow: auto;
+}
+.ui-autocomplete .option-header {
+    font-style: italic;
+    font-weight: bold;
+    margin: 5px 0;
+    font-size: 1.2em;
+    color: gray;
+}
+
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+}
+.ui-button-icon-only .ui-button-text {
+    height: 26px;
+    padding: 0 !important;
+    background: white;
+}
+#infoBox .button {
+    border: none;
+    border-radius: 3px;
+    background: #a4edba;
+    padding: 5px;
+    color: black;
+    text-decoration: none;
+    font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
+    margin: 0 3px;
+    line-height: 30px;
+}
+
+@media (max-width: 768px) {
+    #demo-wrapper {
+        width: auto;
+        height: auto;
+    }
+    #mapBox {
+        width: auto;
+        float: none;
+    }
+    #container {
+        height: 310px;
+    }
+    #sideBox {
+        float: none;
+        width: auto;
+        margin-top: 0;
+        border-left: none;
+        border-top: 1px solid silver;
+    }
+    /*
+    .selector {
+        width: 300px;
+    }
+    .selector .custom-combobox .custom-combobox-input {
+        width: 190px;
+    }
+    .selector .custom-combobox-toggle {
+        left: 226px;
+    }
+    .selector #btn-next-map {
+        left: 310px;
+    }
+    */
+
+}
+
+
+</style>
 
 <script>
 function drawChart(fetchedData) {
 
-    // Prepare demo data
-   
+  /**
+ * Dark theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+// Load the fonts
+Highcharts.createElement('link', {
+   href: 'https://fonts.googleapis.com/css?family=Unica+One',
+   rel: 'stylesheet',
+   type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+
+Highcharts.theme = {
+   colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+      "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2B383F'],
+            [1, '#2B383F']
+         ]
+      },
+      style: {
+         fontFamily: "'Unica One', sans-serif"
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase',
+         fontSize: '20px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
     data = [];
 
     for(elem=0;elem<fetchedData.length;elem++){
@@ -69,45 +440,19 @@ function drawChart(fetchedData) {
     // Initiate the chart
     $('#container').highcharts('Map', {
 
-        title : {
-            text : 'Visitors By Country',
-             style: {
-                     color: '#0000',
-                    font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
-                }
-        },
-
-        colors: ['rgba(19,64,117,0.05)', 'rgba(19,64,117,0.2)', 'rgba(19,64,117,0.4)',
-                    'rgba(19,64,117,0.5)', 'rgba(19,64,117,0.6)', 'rgba(19,64,117,0.8)', 'rgba(19,64,117,1)'],
-
         mapNavigation: {
             enabled: true,
             buttonOptions: {
                 verticalAlign: 'bottom'
             }
         },
-
-        colorAxis: {
-                    dataClasses: [{
-                        to: 3
-                    }, {
-                        from: 3,
-                        to: 10
-                    }, {
-                        from: 10,
-                        to: 30
-                    }, {
-                        from: 30,
-                        to: 100
-                    }, {
-                        from: 100,
-                        to: 300
-                    }, {
-                        from: 300,
-                        to: 1000
-                    }, {
-                        from: 1000
-                    }]
+         colorAxis: {
+                    min: 0,
+                    stops: [
+                        [0, '#EFEFFF'],
+                        [0.1, Highcharts.getOptions().colors[0]],
+                        [0.2    , Highcharts.Color(Highcharts.getOptions().colors[0]).brighten(-0.5).get()]
+                    ]
                 },
 
         series : [{
@@ -120,13 +465,12 @@ function drawChart(fetchedData) {
                 hover: {
                     color: '#BADA55'
                 }
-            },
-            dataLabels: {
-                enabled: true,
-                format: '{point.name}'
             }
         }]
     });
+
+   
+
 }
 
 
