@@ -113,7 +113,9 @@ def writeToTheLog(log, logFile):
 
 # Running logEntriesGenerator and writeToTheLog multiple times asynchronously.
 def multipleConcurrentWrite():
-    fileName = '..\\logs\\access.log'
+    fileName = os.environ.get("LOG_PATH", None)
+    if not fileName:
+        fileName = '..\\logs\\access.log'
     remove_chars = len(os.linesep)
     cur_path = os.getcwd()
     new_path = os.path.relpath(fileName, cur_path)
