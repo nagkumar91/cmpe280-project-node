@@ -1,0 +1,30 @@
+
+img{border-radius: 50%;
+    width: 180px;
+    height: 100% !important}
+
+
+.container-fluid{height: 100%;padding: 0px !important}
+
+.alignImages{
+    vertical-align: middle;
+    margin-left: 38px;
+    margin-top: 50px;
+    margin-right: 20px;
+    float: left;
+    
+}
+
+.alignImages:hover{
+
+     -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+
+}
+
+.team-member{
+	margin-top: 0px;
+}
+.text-center{
+	text-align: center;
+}

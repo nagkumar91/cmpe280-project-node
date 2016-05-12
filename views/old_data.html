@@ -10,12 +10,25 @@ input{
 .tableFormat{
 
     border-style: white;
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(0,0,0,0.5);
 
 }
 
 .tableFormat td{
-    font-color: #0000;
+    color: #0000;
+}
+
+.dataTables_info,.dataTables_length,.dataTables_filter{
+    color:white !important;
+}
+.dataTables_length label select{
+    color:black;
+}
+.dataTables_filter label input{
+    color:black;
+}
+.paginate_button{
+    color:white !important;
 }
 </style>
 <div class="container-fluid">
@@ -32,13 +45,13 @@ input{
     <div class="row">
         <div class="col-md-6  mostVisitedPages  tableFormat " style="display: none;">
                 
-            <h4 style="font-color: black;">Most visited pages</h4>
+            <h4 style="color: white;">Most visited pages</h4>
                     <table class="table table-responsive" id="oldDataTable">
                         <thead>
                         <tr>
-                            <th style="font-color: black;">#</th>
-                            <th style="font-color: black;">Page</th>
-                            <th style="font-color: black;">Count</th>
+                            <th style="color: white;">#</th>
+                            <th style="color: white;">Page</th>
+                            <th style="color: white;">Count</th>
                         </tr>
                         </thead>
                         <tbody id="mostVisitedtbody">
