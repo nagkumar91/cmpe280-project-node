@@ -126,7 +126,7 @@ def multipleConcurrentWrite():
         writeToTheLog(logEntriesGenerator(), logFile)
         i = i + 1
         print(i)
-        # sleep(0.5)
+        sleep(random.randrange(1, 3))
         logFile.close()
 
 
