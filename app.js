@@ -37,7 +37,9 @@ Date.prototype.yyyymmdd = function () {
     return yyyy + (mm[1] ? mm : "0" + mm[0]) + (dd[1] ? dd : "0" + dd[0]); // padding
 };
 function tailLog() {
-    var requestAddress = "http://127.0.0.1:5000/";
+    var requestAddress = process.env.FLASK_URL;
+    if(requestAddress==undefined)
+        requestAddress = "http://127.0.0.1:5000/";
     var ipadd = "Ipadd";
     var logFileLocation = 'logs/access.log'; //Log Location
     /* Keeping Track of new entries in the log
@@ -194,7 +196,11 @@ function tailLog() {
         var data = querystring.stringify({
             ipadd: ipaddress
         });
-        var requestURL = 'http://127.0.0.1:5000/iptrace?ipadd=' + ipaddress;
+        var requestURL = process.env.FLASK_URL;
+        if(requestURL==undefined)
+            requestURL = 'http://127.0.0.1:5000/iptrace?ipadd=' + ipaddress;
+        else
+            requestURL = requestURL + 'iptrace?ipadd=' + ipaddress;
         console.log(requestURL);
         reqHttp(requestURL, function (error, response, body) {
             var d = new Date();
