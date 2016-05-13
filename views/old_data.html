@@ -13,7 +13,10 @@ input{
     background-color: rgba(0,0,0,0.5);
 
 }
-
+td{
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
 .tableFormat td{
     color: #0000;
 }
@@ -31,11 +34,26 @@ input{
     color:white !important;
 }
 @media screen and (max-width: 1024px) {
-#colChartCol{
+#colTableCol{
     padding-top:100px;
     padding-bottom: 100px;
 }
+#oldDataTable {
 
+table-layout:fixed;
+}
+#oldDataTable td{
+    widhth:20px !important;
+    text-overflow: ellipsis;
+}
+
+
+.pageName{
+    width: 30px;
+      white-space: nowrap;
+
+    overflow: hidden;
+}
 }
 </style>
 <div class="container-fluid">
@@ -50,7 +68,12 @@ input{
        
     </div>  
     <div class="row">
-        <div class="col-md-6  mostVisitedPages  tableFormat " style="display: none;">
+        <div class="col-md-6" id="colChartCol">
+                <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+    <!--             <div id="chartContainer1"  style="min-height: 500px;"></div>
+     -->    </div>
+        <div class="col-md-6  mostVisitedPages  tableFormat " id="colTableCol" style="display: none;">
                 
             <h4 style="color: white;">Most visited pages</h4>
                     <table class="table table-responsive" id="oldDataTable">
@@ -67,11 +90,7 @@ input{
                         </tbody>
                     </table>
         </div>
-        <div class="col-md-6" id="colChartCol">
-            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-
-<!--             <div id="chartContainer1"  style="min-height: 500px;"></div>
- -->    </div>
+        
      </div>
 </div>
 
@@ -83,7 +102,7 @@ input{
             var url = "/mostVisitedPage/" + dateString;
             $.get(url).done(function (data) {
                 $("#mostVisitedtbody").html("");
-                var row = '<tr><th scope="row">placeholder_for_i</th><td>placeholder_for_first_field</td><td>placeholder_for_second_field</td></tr>';
+                var row = '<tr><th scope="row">placeholder_for_i</th><td><div class="pageName">placeholder_for_first_field<div></td><td>placeholder_for_second_field</td></tr>';
                 for (var i = 0; i < data.length; i++) {
                     $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
                 }

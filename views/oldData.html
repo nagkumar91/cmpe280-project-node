@@ -60,7 +60,7 @@ input{
             var url = "/mostVisitedPage/" + dateString;
             $.get(url).done(function (data) {
                 $("#mostVisitedtbody").html("");
-                var row = '<tr><th scope="row">placeholder_for_i</th><td>placeholder_for_first_field</td><td>placeholder_for_second_field</td></tr>';
+                var row = '<tr><th scope="row">placeholder_for_i</th><td><div class="pageName">placeholder_for_first_field<div></td><td>placeholder_for_second_field</td></tr>';
                 for (var i = 0; i < data.length; i++) {
                     $("#mostVisitedtbody").append(row.replace("placeholder_for_i", i+1).replace("placeholder_for_first_field", data[i]._id.path).replace("placeholder_for_second_field", data[i].count));
                 }
